@@ -1,26 +1,93 @@
-# .NET
-bin/
-obj/
+# ============================================
+# CreditWorks Vehicle Management - .gitignore
+# ============================================
+
+# ---------- .NET / ASP.NET Core (backend) ----------
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+[Ll]og/
+[Ll]ogs/
+artifacts/
+publish/
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+project.lock.json
+*.pdb
+
+# Test results / coverage (xUnit, coverlet)
+[Tt]est[Rr]esult*/
+TestResults/
+*.trx
+coverage/
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+
+# Local secrets and environment-specific settings
+appsettings.*.local.json
+appsettings.Local.json
+*.pubxml
+*.publishsettings
+*.pfx
+
+# ---------- IDEs ----------
+# Visual Studio
 .vs/
 *.user
 *.suo
+*.userprefs
+*.sln.docstates
 
-# React / Node
+# JetBrains Rider
+.idea/
+*.sln.iml
+*.DotSettings.user
+
+# VS Code (keep shared settings)
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# ---------- React / TypeScript (frontend) ----------
 node_modules/
 dist/
 build/
+.vite/
+*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
 # Environment files
 .env
-.env.local
+.env.*
+!.env.example
 
-# Logs
-*.log
-
-# Database files
+# ---------- Database ----------
 *.mdf
 *.ldf
+*.ndf
+*.db
+*.sqlite
 
-# OS files
+# ---------- Logs & temp ----------
+*.log
+*.tmp
+*.cache
+*.swp
+*~
+
+# ---------- OS files ----------
 .DS_Store
+._*
 Thumbs.db
+ehthumbs.db
+[Dd]esktop.ini
