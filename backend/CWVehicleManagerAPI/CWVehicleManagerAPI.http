@@ -1,0 +1,6 @@
+@CWVehicleManagerAPI_HostAddress = http://localhost:5009
+
+GET {{CWVehicleManagerAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
