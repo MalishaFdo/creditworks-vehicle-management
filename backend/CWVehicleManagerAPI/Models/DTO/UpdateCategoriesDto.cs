@@ -4,8 +4,14 @@ namespace CWVehicleManagerAPI.Models.DTO;
 
 public class UpdateCategoriesDto
 {
+    [Required]
+    public List<UpdateCategoryDto>? Categories { get; set; }
+}
+
+public class UpdateCategoryDto
+{
     public int? Id { get; set; }
-    
+
     [Required(ErrorMessage = "Category name is required.")]
     public string? Name { get; set; }
 
