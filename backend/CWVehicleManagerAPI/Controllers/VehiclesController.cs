@@ -31,7 +31,8 @@ public class VehiclesController : ControllerBase
         [FromQuery] VehicleSortField sortBy = VehicleSortField.OwnerName,
         [FromQuery] SortDirection sortDirection = SortDirection.Asc)
     {
-        var vehicles = await vehicleRepository.GetAllAsync(sortBy, sortDirection);
+        //Get vehicles using the select sorting option
+        var vehicles = await vehicleRepository.GetAllAsync(sortBy, sortDirection);  
         var categories = await categoryRepository.GetAllAsync();
 
         return Ok(vehicles.Select(v => v.ToDto(categories)));
@@ -60,9 +61,10 @@ public class VehiclesController : ControllerBase
     {
 
         var vehicle = addVehicleDto.ToDomain();
-
+        //Validations
         var errors = VehicleValidator.Validate(vehicle.OwnerName, vehicle.YearOfManufacture, vehicle.WeightKg, DateTime.Now.Year);
-        if (!await manufacturerRepository.ExistsAsync(vehicle.ManufacturerId))
+        //Check the select manufacture exists 
+        if (!await manufacturerRepository.ExistsAsync(vehicle.ManufacturerId)) 
         {
             errors.Add(new ValidationError("manufacturerId", "Select a manufacturer from the list."));
         }

@@ -51,13 +51,13 @@ public static class CategoryValidator
             var sameStart = otherCategories.FirstOrDefault(c => c.MinWeightKg == start);
             if (sameStart != null)
             {
-                
+                // Do not allow two categories to start at the same weight
                 errors.Add(new("minWeightKg",
                     $"'{sameStart.Name}' already starts at {Kg(start)}. Two categories cannot start at the same weight."));
             }
             else if (start != 0 && !otherCategories.Any(c => c.MinWeightKg == 0))
             {
-                
+                // The lightest category must start at 0 kg
                 errors.Add(new("minWeightKg",
                     "This is the lightest category, so it must start at 0 kg. Otherwise lighter vehicles would have no category."));
             }

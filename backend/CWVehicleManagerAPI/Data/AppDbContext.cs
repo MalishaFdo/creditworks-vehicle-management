@@ -9,13 +9,14 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
-
+    
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
     public DbSet<Manufacturer> Manufacturers => Set<Manufacturer>();
     public DbSet<VehicleCategory> VehicleCategories => Set<VehicleCategory>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // Configure manufacturer rules and add initial manufacturer data
         modelBuilder.Entity<Manufacturer>(entity =>
         {
             entity.ToTable("Manufacturers");
@@ -23,7 +24,7 @@ public class AppDbContext : DbContext
             entity.HasIndex(m => m.Name).IsUnique();
             entity.HasData(InitData.Manufacturers());
         });
-
+        // Configure category rules, weight limits, and initial category data
         modelBuilder.Entity<VehicleCategory>(entity =>
         {
             entity.ToTable("VehicleCategories", table =>
@@ -38,7 +39,7 @@ public class AppDbContext : DbContext
             entity.Property(c => c.IconKey).IsRequired().HasMaxLength(50);
             entity.HasData(InitData.Categories());
         });
-
+        // Configure vehicle validation rules and manufacturer relationship
         modelBuilder.Entity<Vehicle>(entity =>
         {
             entity.ToTable("Vehicles", table =>

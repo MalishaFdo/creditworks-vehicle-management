@@ -2,6 +2,7 @@ namespace CWVehicleManagerAPI.Utils;
 
 public static class VehicleValidator
 {
+    //Validations 
     public const int MaxOwnerNameLength = 100;
     
     public const int EarliestYear = 1886;

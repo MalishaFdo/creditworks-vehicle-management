@@ -9,8 +9,8 @@ namespace CWVehicleManagerAPI.Migrations
     
     public partial class init_db : Migration
     {
-        
-        protected override void Up(MigrationBuilder migrationBuilder)
+        //Applies DB structure and seed data 
+        protected override void Up(MigrationBuilder migrationBuilder) 
         {
             migrationBuilder.CreateTable(
                 name: "Manufacturers",
@@ -122,7 +122,7 @@ namespace CWVehicleManagerAPI.Migrations
                 column: "YearOfManufacture");
         }
 
-        
+        //Reverse Changes 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

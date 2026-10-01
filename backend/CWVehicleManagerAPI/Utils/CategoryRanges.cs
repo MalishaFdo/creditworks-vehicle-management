@@ -6,6 +6,7 @@ public static class CategoryRanges
 {
     public static void SetUpperLimits(List<VehicleCategory> categories)
     {
+        // Sort categories from lowest to highest weight
         var sorted = categories.OrderBy(c => c.MinWeightKg).ToList();
 
         for (var i = 0; i < sorted.Count; i++)

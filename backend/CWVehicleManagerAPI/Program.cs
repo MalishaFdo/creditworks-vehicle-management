@@ -8,19 +8,19 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+//Configure Controllers 
 builder.Services
     .AddControllers(options =>
         options.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider()))
     .AddJsonOptions(options =>
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)));
 
-
+//Configure Swagger API
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml")));
 
-
+// Configure Database
 var connectionString = builder.Configuration.GetConnectionString("DbConnectionString");
 if (string.IsNullOrWhiteSpace(connectionString))
 {
@@ -28,7 +28,7 @@ if (string.IsNullOrWhiteSpace(connectionString))
 }
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 
-
+//Repository Implementation 
 builder.Services.AddScoped<IVehicleRepository, SQLVehicleRepository>();
 builder.Services.AddScoped<ICategoryRepository, SQLCategoryRepository>();
 builder.Services.AddScoped<IManufacturerRepository, SQLManufacturerRepository>();
@@ -45,7 +45,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
+//Database Migration 
 if (app.Configuration.GetValue<bool>("Database:MigrateOnStartup"))
 {
     using var scope = app.Services.CreateScope();

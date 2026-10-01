@@ -24,7 +24,7 @@ public class CategoriesController : ControllerBase
         var categories = await categoryRepository.GetAllAsync();
         return Ok(categories.Select(c => c.ToDto()));
     }
-    
+    //Get Category 
     [HttpGet("{id:int}")]
     [ProducesResponseType<CategoryDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
@@ -38,7 +38,7 @@ public class CategoriesController : ControllerBase
 
         return Ok(category.ToDto());
     }
-    
+    //Create Category 
     [HttpPost]
     [ProducesResponseType<CategoryDto>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
@@ -56,7 +56,7 @@ public class CategoriesController : ControllerBase
         category = await categoryRepository.CreateAsync(category);
         return CreatedAtAction(nameof(GetById), new { id = category.Id }, category.ToDto());
     }
-    
+    //Update Category
     [HttpPut("{id:int}")]
     [ProducesResponseType<CategoryDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
@@ -70,6 +70,7 @@ public class CategoriesController : ControllerBase
         }
 
         var category = saveCategoryDto.ToDomain();
+        // Ignore the current category when checking for duplicate names
         var otherCategories = categories.Where(c => c.Id != id).ToList();
 
         var errors = CategoryValidator.Validate(category, otherCategories);
@@ -87,7 +88,7 @@ public class CategoriesController : ControllerBase
 
         return Ok(updated.ToDto());
     }
-    
+    //Delete Category 
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status400BadRequest)]
@@ -99,7 +100,7 @@ public class CategoriesController : ControllerBase
         {
             return CategoryNotFound(id);
         }
-
+        //Keeping remain at least 01 category   
         if (categories.Count == 1)
         {
             return Problem(
