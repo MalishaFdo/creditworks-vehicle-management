@@ -7,39 +7,43 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CWVehicleManagerAPI.tests.Repositories;
 
-public class SQLVehicleRepositoryTests
+public class SQLVehicleRepositoryTests : IAsyncLifetime
 {
-    private async Task<(AppDbContext Context, SqliteConnection Connection)>
-        CreateDatabaseAsync()
+    private SqliteConnection _connection = null!;
+    private AppDbContext _context = null!;
+    private SQLVehicleRepository _repository = null!;
+
+    public async Task InitializeAsync()
     {
-        var connection = new SqliteConnection("DataSource=:memory:");
-        await connection.OpenAsync();
+        _connection = new SqliteConnection("DataSource=:memory:");
+        await _connection.OpenAsync();
 
         var options = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlite(connection)
+            .UseSqlite(_connection)
             .Options;
 
-        var context = new AppDbContext(options);
+        _context = new AppDbContext(options);
+        await _context.Database.EnsureCreatedAsync();
 
-        await context.Database.EnsureCreatedAsync();
+        await AddTestVehiclesAsync();
 
-        return (context, connection);
+        _repository = new SQLVehicleRepository(_context);
     }
 
-    private async Task AddTestVehiclesAsync(AppDbContext context)
+    public async Task DisposeAsync()
     {
-        
-        var manufacturers = await context.Manufacturers
-            .OrderBy(m => m.Id)
-            .Take(3)
-            .ToListAsync();
+        await _context.DisposeAsync();
+        await _connection.DisposeAsync();
+    }
 
+     private async Task AddTestVehiclesAsync()
+    {
         var vehicles = new List<Vehicle>
         {
             new()
             {
                 OwnerName = "Charlie",
-                ManufacturerId = manufacturers[0].Id,
+                ManufacturerId = 1,
                 YearOfManufacture = 2020,
                 WeightKg = 2000m
             },
@@ -47,7 +51,7 @@ public class SQLVehicleRepositoryTests
             new()
             {
                 OwnerName = "Alice",
-                ManufacturerId = manufacturers[1].Id,
+                ManufacturerId = 2,
                 YearOfManufacture = 2018,
                 WeightKg = 1000m
             },
@@ -55,175 +59,85 @@ public class SQLVehicleRepositoryTests
             new()
             {
                 OwnerName = "Bob",
-                ManufacturerId = manufacturers[2].Id,
+                ManufacturerId = 3,
                 YearOfManufacture = 2022,
                 WeightKg = 3000m
             }
         };
 
-        await context.Vehicles.AddRangeAsync(vehicles);
-        await context.SaveChangesAsync();
+        await _context.Vehicles.AddRangeAsync(vehicles);
+        await _context.SaveChangesAsync();
     }
 
     [Fact]
     public async Task GetAllAsync_SortByOwnerNameAscending_ReturnsCorrectOrder()
     {
-        var (context, connection) = await CreateDatabaseAsync();
+        var result = await _repository.GetAllAsync(
+            VehicleSortField.OwnerName,
+            SortDirection.Asc);
 
-        try
-        {
-            await AddTestVehiclesAsync(context);
-
-            var repository = new SQLVehicleRepository(context);
-
-            var result = await repository.GetAllAsync(
-                VehicleSortField.OwnerName,
-                SortDirection.Asc);
-
-            Assert.Equal(
-                new[] { "Alice", "Bob", "Charlie" },
-                result.Select(v => v.OwnerName));
-        }
-        finally
-        {
-            await context.DisposeAsync();
-            await connection.DisposeAsync();
-        }
+        Assert.Equal(
+            new[] { "Alice", "Bob", "Charlie" },
+            result.Select(v => v.OwnerName));
     }
 
     [Fact]
     public async Task GetAllAsync_SortByOwnerNameDescending_ReturnsCorrectOrder()
     {
-        var (context, connection) = await CreateDatabaseAsync();
+        var result = await _repository.GetAllAsync(
+            VehicleSortField.OwnerName,
+            SortDirection.Desc);
 
-        try
-        {
-            await AddTestVehiclesAsync(context);
-
-            var repository = new SQLVehicleRepository(context);
-
-            var result = await repository.GetAllAsync(
-                VehicleSortField.OwnerName,
-                SortDirection.Desc);
-
-            Assert.Equal(
-                new[] { "Charlie", "Bob", "Alice" },
-                result.Select(v => v.OwnerName));
-        }
-        finally
-        {
-            await context.DisposeAsync();
-            await connection.DisposeAsync();
-        }
+        Assert.Equal(
+            new[] { "Charlie", "Bob", "Alice" },
+            result.Select(v => v.OwnerName));
     }
 
     [Fact]
     public async Task GetAllAsync_SortByYearAscending_ReturnsCorrectOrder()
     {
-        var (context, connection) = await CreateDatabaseAsync();
+        var result = await _repository.GetAllAsync(
+            VehicleSortField.YearOfManufacture,
+            SortDirection.Asc);
 
-        try
-        {
-            await AddTestVehiclesAsync(context);
-
-            var repository = new SQLVehicleRepository(context);
-
-            var result = await repository.GetAllAsync(
-                VehicleSortField.YearOfManufacture,
-                SortDirection.Asc);
-
-            Assert.Equal(
-                new[] { 2018, 2020, 2022 },
-                result.Select(v => v.YearOfManufacture));
-        }
-        finally
-        {
-            await context.DisposeAsync();
-            await connection.DisposeAsync();
-        }
+        Assert.Equal(
+            new[] { 2018, 2020, 2022 },
+            result.Select(v => v.YearOfManufacture));
     }
 
     [Fact]
     public async Task GetAllAsync_SortByWeightAscending_ReturnsCorrectOrder()
     {
-        var (context, connection) = await CreateDatabaseAsync();
+        var result = await _repository.GetAllAsync(
+            VehicleSortField.Weight,
+            SortDirection.Asc);
 
-        try
-        {
-            await AddTestVehiclesAsync(context);
-
-            var repository = new SQLVehicleRepository(context);
-
-            var result = await repository.GetAllAsync(
-                VehicleSortField.Weight,
-                SortDirection.Asc);
-
-            Assert.Equal(
-                new[] { 1000m, 2000m, 3000m },
-                result.Select(v => v.WeightKg));
-        }
-        finally
-        {
-            await context.DisposeAsync();
-            await connection.DisposeAsync();
-        }
+        Assert.Equal(
+            new[] { 1000m, 2000m, 3000m },
+            result.Select(v => v.WeightKg));
     }
 
     [Fact]
     public async Task GetAllAsync_SortByWeightDescending_ReturnsCorrectOrder()
     {
-        var (context, connection) = await CreateDatabaseAsync();
+        var result = await _repository.GetAllAsync(
+            VehicleSortField.Weight,
+            SortDirection.Desc);
 
-        try
-        {
-            await AddTestVehiclesAsync(context);
-
-            var repository = new SQLVehicleRepository(context);
-
-            var result = await repository.GetAllAsync(
-                VehicleSortField.Weight,
-                SortDirection.Desc);
-
-            Assert.Equal(
-                new[] { 3000m, 2000m, 1000m },
-                result.Select(v => v.WeightKg));
-        }
-        finally
-        {
-            await context.DisposeAsync();
-            await connection.DisposeAsync();
-        }
+        Assert.Equal(
+            new[] { 3000m, 2000m, 1000m },
+            result.Select(v => v.WeightKg));
     }
 
     [Fact]
     public async Task GetAllAsync_SortByManufacturerAscending_ReturnsCorrectOrder()
     {
-        var (context, connection) = await CreateDatabaseAsync();
+        var result = await _repository.GetAllAsync(
+            VehicleSortField.Manufacturer,
+            SortDirection.Asc);
 
-        try
-        {
-            await AddTestVehiclesAsync(context);
-
-            var repository = new SQLVehicleRepository(context);
-
-            var result = await repository.GetAllAsync(
-                VehicleSortField.Manufacturer,
-                SortDirection.Asc);
-
-            var names = result
-                .Select(v => v.Manufacturer!.Name)
-                .ToList();
-
-            var expected = names
-                .OrderBy(name => name)
-                .ToList();
-
-            Assert.Equal(expected, names);
-        }
-        finally
-        {
-            await context.DisposeAsync();
-            await connection.DisposeAsync();
-        }
+        Assert.Equal(
+            new[] { "Honda", "Mazda", "Mercedes" },
+            result.Select(v => v.Manufacturer!.Name));
     }
 }

@@ -13,7 +13,7 @@ public class CategoryResolverTests
             Name = "Light",
             MinWeightKg = 0m,
             MaxWeightKg = 500m,
-            IconKey = "light"
+            IconKey = "motorcycle"
         },
         new VehicleCategory
         {
@@ -21,7 +21,7 @@ public class CategoryResolverTests
             Name = "Medium",
             MinWeightKg = 500m,
             MaxWeightKg = 2500m,
-            IconKey = "medium"
+            IconKey = "car"
         },
         new VehicleCategory
         {
@@ -29,52 +29,40 @@ public class CategoryResolverTests
             Name = "Heavy",
             MinWeightKg = 2500m,
             MaxWeightKg = null,
-            IconKey = "heavy"
+            IconKey = "truck"
         }
     ];
 
-    [Fact]
-    public void Resolve_WhenWeightIs300_ReturnsLight()
+    public static TheoryData<decimal, string> WeightsWithinRange => new()
     {
-        var result = CategoryResolver.Resolve(_categories, 300m);
+        { 300m, "Light" },
+        { 1500m, "Medium" },
+        { 3000m, "Heavy" },
+    };
+    
+    public static TheoryData<decimal, string> BoundaryWeights => new()
+    {
+        { 500m, "Medium" },
+        { 2500m, "Heavy" },
+    };
+
+    [Theory]
+    [MemberData(nameof(WeightsWithinRange))]
+    public void Resolve_WhenWeightIsWithinRange_ReturnsMatchingCategory(decimal weightKg, string expectedCategory)
+    {
+        var result = CategoryResolver.Resolve(_categories, weightKg);
 
         Assert.NotNull(result);
-        Assert.Equal("Light", result.Name);
+        Assert.Equal(expectedCategory, result.Name);
     }
 
-    [Fact]
-    public void Resolve_WhenWeightIs1500_ReturnsMedium()
+    [Theory]
+    [MemberData(nameof(BoundaryWeights))]
+    public void Resolve_WhenWeightIsOnBoundary_ReturnsHigherCategory(decimal weightKg, string expectedCategory)
     {
-        var result = CategoryResolver.Resolve(_categories, 1500m);
+        var result = CategoryResolver.Resolve(_categories, weightKg);
 
         Assert.NotNull(result);
-        Assert.Equal("Medium", result.Name);
-    }
-
-    [Fact]
-    public void Resolve_WhenWeightIs3000_ReturnsHeavy()
-    {
-        var result = CategoryResolver.Resolve(_categories, 3000m);
-
-        Assert.NotNull(result);
-        Assert.Equal("Heavy", result.Name);
-    }
-
-    [Fact]
-    public void Resolve_WhenWeightIsExactly500_ReturnsMedium()
-    {
-        var result = CategoryResolver.Resolve(_categories, 500m);
-
-        Assert.NotNull(result);
-        Assert.Equal("Medium", result.Name);
-    }
-
-    [Fact]
-    public void Resolve_WhenWeightIsExactly2500_ReturnsHeavy()
-    {
-        var result = CategoryResolver.Resolve(_categories, 2500m);
-
-        Assert.NotNull(result);
-        Assert.Equal("Heavy", result.Name);
+        Assert.Equal(expectedCategory, result.Name);
     }
 }

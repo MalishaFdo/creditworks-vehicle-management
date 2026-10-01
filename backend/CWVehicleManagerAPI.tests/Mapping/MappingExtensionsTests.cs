@@ -5,89 +5,58 @@ namespace CWVehicleManagerAPI.tests.Mappings;
 
 public class MappingExtensionsTests
 {
-    [Fact]
-    public void ToDto_WhenCategoryRangesChange_UsesCurrentCategory()
+    private readonly Vehicle _vehicle = new()
     {
-        
-        var vehicle = new Vehicle
+        Id = 1,
+        OwnerName = "John Smith",
+        ManufacturerId = 1,
+        YearOfManufacture = 2020,
+        WeightKg = 2200m
+    };
+
+    private static List<VehicleCategory> CreateCategories(decimal heavyStartKg) =>
+    [
+        new()
         {
             Id = 1,
-            OwnerName = "John Smith",
-            ManufacturerId = 1,
-            YearOfManufacture = 2020,
-            WeightKg = 2200m
-        };
-
-        var originalCategories = new List<VehicleCategory>
+            Name = "Light",
+            MinWeightKg = 0m,
+            MaxWeightKg = 500m,
+            IconKey = "motorcycle"
+        },
+        new()
         {
-            new()
-            {
-                Id = 1,
-                Name = "Light",
-                MinWeightKg = 0m,
-                MaxWeightKg = 500m,
-                IconKey = "light"
-            },
-            new()
-            {
-                Id = 2,
-                Name = "Medium",
-                MinWeightKg = 500m,
-                MaxWeightKg = 2500m,
-                IconKey = "medium"
-            },
-            new()
-            {
-                Id = 3,
-                Name = "Heavy",
-                MinWeightKg = 2500m,
-                MaxWeightKg = null,
-                IconKey = "heavy"
-            }
-        };
-
-        
-        var originalDto = vehicle.ToDto(originalCategories);
-
-        
-        Assert.NotNull(originalDto.Category);
-        Assert.Equal("Medium", originalDto.Category.Name);
-
-
-        
-        var updatedCategories = new List<VehicleCategory>
+            Id = 2,
+            Name = "Medium",
+            MinWeightKg = 500m,
+            MaxWeightKg = heavyStartKg,
+            IconKey = "car"
+        },
+        new()
         {
-            new()
-            {
-                Id = 1,
-                Name = "Light",
-                MinWeightKg = 0m,
-                MaxWeightKg = 500m,
-                IconKey = "light"
-            },
-            new()
-            {
-                Id = 2,
-                Name = "Medium",
-                MinWeightKg = 500m,
-                MaxWeightKg = 2000m,
-                IconKey = "medium"
-            },
-            new()
-            {
-                Id = 3,
-                Name = "Heavy",
-                MinWeightKg = 2000m,
-                MaxWeightKg = null,
-                IconKey = "heavy"
-            }
-        };
+            Id = 3,
+            Name = "Heavy",
+            MinWeightKg = heavyStartKg,
+            MaxWeightKg = null,
+            IconKey = "truck"
+        }
+    ];
 
-        
-        var updatedDto = vehicle.ToDto(updatedCategories);
+    [Fact]
+    public void ToDto_WithOriginalRanges_UsesMediumCategory()
+    {
+        var dto = _vehicle.ToDto(CreateCategories(heavyStartKg: 2500m));
 
-        
-        Assert.NotNull(updatedDto.Category);
-        Assert.Equal("Heavy", updatedDto.Category.Name);
+        Assert.NotNull(dto.Category);
+        Assert.Equal("Medium", dto.Category.Name);
+    }
+
+    [Fact]
+    public void ToDto_WhenHeavyStartsBelowVehicleWeight_UsesHeavyCategory()
+    {
+        var dto = _vehicle.ToDto(CreateCategories(heavyStartKg: 2000m));
+
+        Assert.NotNull(dto.Category);
+        Assert.Equal("Heavy", dto.Category.Name);
     }
 }

@@ -5,23 +5,33 @@ namespace CWVehicleManagerAPI.tests.Utils;
 public class VehicleValidatorTests
 {
     private const int CurrentYear = 2026;
+    private const string ValidOwnerName = "John Smith";
+    private const int ValidYear = 2020;
+    private const decimal ValidWeightKg = 1500m;
+
+    public static TheoryData<decimal, string> InvalidWeights => new()
+    {
+        { 0m, "greater than 0 kg" },
+        { -100m, "greater than 0 kg" },
+        { 1500.123m, "at most 2 decimal places" },
+    };
+
+    public static TheoryData<decimal> ValidWeights => new()
+    {
+        0.01m,
+        1500.75m,
+        1500.5m,
+    };
 
     [Fact]
     public void Validate_WhenVehicleIsValid_ReturnsNoErrors()
     {
-       
-        string ownerName = "John Smith";
-        int year = 2020;
-        decimal weightKg = 1500.50m;
-
-        
         var errors = VehicleValidator.Validate(
-            ownerName,
-            year,
-            weightKg,
+            ValidOwnerName,
+            ValidYear,
+            1500.50m,
             CurrentYear);
 
-        
         Assert.Empty(errors);
     }
 
@@ -30,115 +40,71 @@ public class VehicleValidatorTests
     {
         var errors = VehicleValidator.Validate(
             "",
-            2020,
-            1500m,
+            ValidYear,
+            ValidWeightKg,
             CurrentYear);
 
-        Assert.Contains(errors,
-            error => error.Field == "ownerName");
+        var error = Assert.Single(errors);
+        Assert.Equal("ownerName", error.Field);
+        Assert.Contains("required", error.Message);
     }
 
-    [Fact]
-    public void Validate_WhenYearIsBeforeEarliestYear_ReturnsYearError()
+    [Theory]
+    [InlineData(1800)]
+    [InlineData(VehicleValidator.EarliestYear - 1)]
+    [InlineData(CurrentYear + 1)]
+    public void Validate_WhenYearIsOutOfRange_ReturnsYearError(int year)
     {
         var errors = VehicleValidator.Validate(
-            "John Smith",
-            1800,
-            1500m,
+            ValidOwnerName,
+            year,
+            ValidWeightKg,
             CurrentYear);
 
-        Assert.Contains(errors,
-            error => error.Field == "yearOfManufacture");
+        var error = Assert.Single(errors);
+        Assert.Equal("yearOfManufacture", error.Field);
+        Assert.Contains($"between {VehicleValidator.EarliestYear} and {CurrentYear}", error.Message);
     }
 
-    [Fact]
-    public void Validate_WhenYearIsInFuture_ReturnsYearError()
+    [Theory]
+    [InlineData(VehicleValidator.EarliestYear)]
+    [InlineData(CurrentYear)]
+    public void Validate_WhenYearIsWithinRange_ReturnsNoErrors(int year)
     {
         var errors = VehicleValidator.Validate(
-            "John Smith",
-            2027,
-            1500m,
+            ValidOwnerName,
+            year,
+            ValidWeightKg,
             CurrentYear);
 
-        Assert.Contains(errors,
-            error => error.Field == "yearOfManufacture");
+        Assert.Empty(errors);
     }
 
-    [Fact]
-    public void Validate_WhenWeightIsZero_ReturnsWeightError()
+    [Theory]
+    [MemberData(nameof(InvalidWeights))]
+    public void Validate_WhenWeightIsInvalid_ReturnsWeightError(decimal weightKg, string expectedMessage)
     {
         var errors = VehicleValidator.Validate(
-            "John Smith",
-            2020,
-            0m,
+            ValidOwnerName,
+            ValidYear,
+            weightKg,
             CurrentYear);
 
-        Assert.Contains(errors,
-            error => error.Field == "weightKg");
+        var error = Assert.Single(errors);
+        Assert.Equal("weightKg", error.Field);
+        Assert.Contains(expectedMessage, error.Message);
     }
 
-    [Fact]
-    public void Validate_WhenWeightIsNegative_ReturnsWeightError()
+    [Theory]
+    [MemberData(nameof(ValidWeights))]
+    public void Validate_WhenWeightIsValid_ReturnsNoErrors(decimal weightKg)
     {
         var errors = VehicleValidator.Validate(
-            "John Smith",
-            2020,
-            -100m,
+            ValidOwnerName,
+            ValidYear,
+            weightKg,
             CurrentYear);
 
-        Assert.Contains(errors,
-            error => error.Field == "weightKg");
-    }
-
-    [Fact]
-    public void Validate_WhenWeightHasMoreThanTwoDecimalPlaces_ReturnsWeightError()
-    {
-        var errors = VehicleValidator.Validate(
-            "John Smith",
-            2020,
-            1500.123m,
-            CurrentYear);
-
-        Assert.Contains(errors,
-            error => error.Field == "weightKg");
-    }
-
-    [Fact]
-    public void Validate_WhenWeightHasTwoDecimalPlaces_ReturnsNoWeightError()
-    {
-        var errors = VehicleValidator.Validate(
-            "John Smith",
-            2020,
-            1500.75m,
-            CurrentYear);
-
-        Assert.DoesNotContain(errors,
-            error => error.Field == "weightKg");
-    }
-
-    [Fact]
-    public void Validate_WhenYearIsEarliestAllowedYear_ReturnsNoYearError()
-    {
-        var errors = VehicleValidator.Validate(
-            "John Smith",
-            VehicleValidator.EarliestYear,
-            1500m,
-            CurrentYear);
-
-        Assert.DoesNotContain(errors,
-            error => error.Field == "yearOfManufacture");
-    }
-
-    [Fact]
-    public void Validate_WhenYearIsCurrentYear_ReturnsNoYearError()
-    {
-        var errors = VehicleValidator.Validate(
-            "John Smith",
-            CurrentYear,
-            1500m,
-            CurrentYear);
-
-        Assert.DoesNotContain(errors,
-            error => error.Field == "yearOfManufacture");
+        Assert.Empty(errors);
     }
 }
