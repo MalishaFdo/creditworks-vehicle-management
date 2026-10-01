@@ -11,18 +11,19 @@ function CategoryManagement() {
   const [categories, setCategories] = useState([]);
   const [icons, setIcons] = useState([]);
   const [form, setForm] = useState(emptyForm);
-  const [editingId, setEditingId] = useState(null); // null = adding a new category
-  const [fieldErrors, setFieldErrors] = useState({}); // errors from the server, per field
+  const [editingId, setEditingId] = useState(null); 
+  const [fieldErrors, setFieldErrors] = useState({}); 
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  // Load the latest categories from the API.
   function loadCategories() {
     getCategories()
       .then((response) => setCategories(response.data))
       .catch((err) => setError(getErrorMessage(err)));
   }
 
-  // Load the categories and the list of icons when the page opens.
+  // Load categories and icons when the page opens.
   useEffect(() => {
     loadCategories();
     getCategoryIcons().then((response) => setIcons(response.data));
@@ -38,7 +39,7 @@ function CategoryManagement() {
     setForm({ ...form, [event.target.name]: event.target.value });
   }
 
-  // Fill the form with a category so it can be changed.
+  // Fill the form with the category being edited.
   function handleEdit(category) {
     clearMessages();
     setEditingId(category.id);
@@ -62,6 +63,7 @@ function CategoryManagement() {
     };
 
     try {
+      // Add a new category or update the selected category.
       if (editingId === null) {
         await addCategory(category);
         setSuccessMessage(`Category "${category.name}" added.`);
@@ -82,6 +84,7 @@ function CategoryManagement() {
   }
 
   async function handleDelete(category) {
+    // Ask for confirmation before deleting.
     if (!window.confirm(`Delete the category "${category.name}"?`)) return;
     clearMessages();
 
@@ -137,7 +140,7 @@ function CategoryManagement() {
         </table>
       </div>
 
-      {/* The same form is used to add a new category and to edit an existing one. */}
+      {/*Use the same form for adding and editing.*/}
       <form onSubmit={handleSubmit} className="category-form">
         <h2>{editingId === null ? "Add a category" : "Edit category"}</h2>
 

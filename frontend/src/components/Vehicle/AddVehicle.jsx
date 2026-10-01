@@ -13,7 +13,7 @@ const emptyVehicle = {
   weightKg: "",
 };
 
-// Inputs give us text. The API wants numbers, or null when the box is empty.
+//Convert input text to a number or null.
 function toNumber(value) {
   return value === "" ? null : Number(value);
 }
@@ -28,32 +28,35 @@ function AddVehicle() {
   const [error, setError] = useState(""); // any other error
   const [isSaving, setIsSaving] = useState(false);
 
-  // Load the manufacturer list for the drop-down.
+  //Load manufacturers when the page opens.
   useEffect(() => {
     getManufacturers()
       .then((response) => setManufacturers(response.data))
       .catch((err) => setError(getErrorMessage(err)));
   }, []);
 
-  // One change handler for every input: the input's "name" says which field to update.
+  //Update the changed form field.
   function handleChange(event) {
     setVehicle({ ...vehicle, [event.target.name]: event.target.value });
   }
 
   async function handleSubmit(event) {
-    event.preventDefault(); // stop the browser reloading the page
+    // Stop the page from reloading.
+    event.preventDefault(); 
     setIsSaving(true);
     setError("");
     setFieldErrors({});
 
     try {
+      // Send the vehicle data to the API.
       await addVehicle({
         ownerName: vehicle.ownerName,
         manufacturerId: toNumber(vehicle.manufacturerId),
         yearOfManufacture: toNumber(vehicle.yearOfManufacture),
         weightKg: toNumber(vehicle.weightKg),
       });
-      navigate("/"); // back to the vehicle list
+      // Return to the vehicle list after saving.
+      navigate("/"); 
     } catch (err) {
       const errors = getFieldErrors(err);
       setFieldErrors(errors);
@@ -71,8 +74,7 @@ function AddVehicle() {
 
       {error && <p className="alert alert-error">{error}</p>}
 
-      {/* The attributes on each input (required, min, max, step) let the browser
-          check the values first. The server checks everything again. */}
+      {/* Browser validation runs before the form is submitted. */}
       <form onSubmit={handleSubmit} className="form">
         <label>
           Owner's name

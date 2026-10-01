@@ -1,4 +1,4 @@
-// Shows the server's error messages under a form field (nothing if there are none).
+// Show validation errors under a form field.
 function FieldError({ messages }) {
   if (!messages) return null;
   return <span className="field-error">{messages.join(" ")}</span>;

@@ -11,12 +11,12 @@
   justify-content: flex-end;
 }
 
-/* The row being edited in the form below */
+
 .editing-row {
   background: #eef4ff;
 }
 
-/* Add / edit form */
+/* Category add/edit form */
 .category-form {
   display: flex;
   flex-direction: column;

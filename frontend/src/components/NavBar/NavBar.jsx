@@ -7,7 +7,6 @@ function NavBar() {
       <span className="navbar-title">Vehicle Manager</span>
 
       <nav>
-        {/* NavLink adds the "active" class to the link of the current page. */}
         <NavLink to="/" end>
           Vehicles
         </NavLink>

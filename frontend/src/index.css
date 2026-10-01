@@ -1,4 +1,4 @@
-/* Styles shared by every page. Page-specific styles are in the styles/ folder. */
+
 
 body {
   margin: 0;
@@ -18,7 +18,7 @@ h1 {
   margin: 0 0 16px;
 }
 
-/* Buttons (also used on links that look like buttons) */
+/* Buttons */
 .button {
   display: inline-block;
   padding: 8px 16px;
@@ -48,7 +48,7 @@ h1 {
 
 /* Tables */
 .table-wrapper {
-  overflow-x: auto; /* scroll sideways on small screens */
+  overflow-x: auto; 
   background: white;
   border: 1px solid #d8dde4;
   border-radius: 8px;
