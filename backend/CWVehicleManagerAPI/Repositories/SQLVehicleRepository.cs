@@ -19,7 +19,7 @@ public class SQLVehicleRepository : IVehicleRepository
         var vehicles = dbContext.Vehicles.AsNoTracking().Include(v => v.Manufacturer);
         var descending = sortDirection == SortDirection.Desc;
 
-        // Sorting is done by SQL Server. The column comes from a fixed enum, never from raw user text.
+       
         var sorted = sortBy switch
         {
             VehicleSortField.Manufacturer => descending
@@ -36,7 +36,7 @@ public class SQLVehicleRepository : IVehicleRepository
                 : vehicles.OrderBy(v => v.OwnerName),
         };
 
-        // Tie-breaker so vehicles with equal values always appear in the same order.
+       
         return await sorted.ThenBy(v => v.Id).ToListAsync();
     }
 
@@ -53,7 +53,7 @@ public class SQLVehicleRepository : IVehicleRepository
         await dbContext.Vehicles.AddAsync(vehicle);
         await dbContext.SaveChangesAsync();
 
-        // Load the manufacturer so the response can include its name.
+        
         await dbContext.Entry(vehicle).Reference(v => v.Manufacturer).LoadAsync();
         return vehicle;
     }

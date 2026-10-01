@@ -4,6 +4,7 @@ namespace CWVehicleManagerAPI.Data;
 
 public class InitData
 {
+    //Manufacturers added to the database
     public static List<Manufacturer> Manufacturers() =>
     [
         new() { Id = 1, Name = "Mazda" },
@@ -13,6 +14,7 @@ public class InitData
         new() { Id = 5, Name = "Toyota" },
     ];
 
+    //Vehicle categories and their weight ranges
     public static List<VehicleCategory> Categories() =>
     [
         new() { Id = 1, Name = "Light", MinWeightKg = 0m, MaxWeightKg = 500m, IconKey = "motorcycle" },

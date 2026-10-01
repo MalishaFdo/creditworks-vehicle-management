@@ -15,7 +15,7 @@ public class ManufacturersController : ControllerBase
     {
         this.manufacturerRepository = manufacturerRepository;
     }
-    
+    //Get All Manufactures 
     [HttpGet]
     [ProducesResponseType<List<ManufacturerDto>>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll()
