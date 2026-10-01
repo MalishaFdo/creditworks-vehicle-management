@@ -53,7 +53,7 @@ public class AppDbContext : DbContext
                 .HasForeignKey(v => v.ManufacturerId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Indexes for the sorting.
+            
             entity.HasIndex(v => v.OwnerName);
             entity.HasIndex(v => v.YearOfManufacture);
             entity.HasIndex(v => v.WeightKg);

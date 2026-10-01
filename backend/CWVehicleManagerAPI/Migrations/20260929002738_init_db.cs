@@ -2,14 +2,14 @@
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+#pragma warning disable CA1814 
 
 namespace CWVehicleManagerAPI.Migrations
 {
-    /// <inheritdoc />
+    
     public partial class init_db : Migration
     {
-        /// <inheritdoc />
+        
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -122,7 +122,7 @@ namespace CWVehicleManagerAPI.Migrations
                 column: "YearOfManufacture");
         }
 
-        /// <inheritdoc />
+        
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

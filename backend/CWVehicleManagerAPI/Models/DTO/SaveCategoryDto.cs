@@ -10,7 +10,7 @@ public class SaveCategoryDto
     [Required(ErrorMessage = "Category icon is required.")]
     public string? IconKey { get; set; }
 
-    /// <summary>The weight this category starts at (included), in kg.</summary>
+   
     [Required(ErrorMessage = "Start weight is required.")]
     public decimal? MinWeightKg { get; set; }
 }

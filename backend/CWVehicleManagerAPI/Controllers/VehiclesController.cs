@@ -37,7 +37,7 @@ public class VehiclesController : ControllerBase
         return Ok(vehicles.Select(v => v.ToDto(categories)));
     }
 
-    /// <summary>Gets one vehicle with its current category.</summary>
+    
     [HttpGet("{id:int}")]
     [ProducesResponseType<VehicleDto>(StatusCodes.Status200OK)]
     [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
