@@ -22,7 +22,7 @@
   cursor: pointer;
 }
 
-/* The column the list is sorted by */
+
 .sort-button.active {
   color: #1f5fbf;
 }

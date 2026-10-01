@@ -1,14 +1,12 @@
-// Turns an error from axios into simple messages we can show on the page.
-
-// Errors for each field, e.g. { weightKg: ["Weight must be greater than 0 kg."] }
+// Get validation errors for each field.
 export function getFieldErrors(error) {
   return error.response?.data?.errors || {};
 }
 
-// One message for the whole request.
+// Get a general error message.
 export function getErrorMessage(error) {
   if (!error.response) {
-    return "Cannot reach the server. Check that the API is running.";
+    return "Cannot reach the server.";
   }
 
   const data = error.response.data;

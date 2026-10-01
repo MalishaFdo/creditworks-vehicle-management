@@ -5,7 +5,7 @@ import { getErrorMessage } from "../../api/apiErrors";
 import CategoryIcon from "../Category/CategoryIcon";
 import "../../styles/vehicle.css";
 
-// The columns the user can sort by. "field" is the value the API expects.
+//Columns available for sorting.
 const sortableColumns = [
   { field: "ownerName", label: "Owner" },
   { field: "manufacturer", label: "Manufacturer" },
@@ -20,7 +20,7 @@ function VehicleList() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Load the vehicles when the page opens, and again whenever the sort order changes.
+  //Load vehicles when the page opens or sorting changes.
   useEffect(() => {
     setIsLoading(true);
     getVehicles(sortBy, sortDirection)
@@ -32,7 +32,7 @@ function VehicleList() {
       .finally(() => setIsLoading(false));
   }, [sortBy, sortDirection]);
 
-  // Clicking the current column flips the direction; clicking another column sorts by it (A → Z).
+  //Change the sort field or direction
   function handleSort(field) {
     if (field === sortBy) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -42,6 +42,7 @@ function VehicleList() {
     }
   }
 
+// Show the correct arrow for the current sort.
   function sortArrow(field) {
     if (field !== sortBy) return "↕";
     return sortDirection === "asc" ? "▲" : "▼";

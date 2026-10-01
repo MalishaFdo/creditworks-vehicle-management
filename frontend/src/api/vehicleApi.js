@@ -1,11 +1,11 @@
 import axios from "axios";
 
-// "/api" is forwarded to the backend by vite.config.js.
+// Vehicle API endpoint.
 const url = "/api/vehicles";
 
-// sortBy: "ownerName" | "manufacturer" | "yearOfManufacture" | "weight"
-// sortDirection: "asc" | "desc"
+// Get vehicles using the selected sorting.
 export const getVehicles = (sortBy, sortDirection) =>
   axios.get(url, { params: { sortBy, sortDirection } });
 
+// Add a new vehicle.
 export const addVehicle = (vehicle) => axios.post(url, vehicle);
