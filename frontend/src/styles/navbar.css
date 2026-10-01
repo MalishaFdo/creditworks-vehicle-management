@@ -1,0 +1,32 @@
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+  padding: 12px 16px;
+  background: white;
+  border-bottom: 1px solid #d8dde4;
+}
+
+.navbar-title {
+  font-weight: bold;
+}
+
+.navbar nav {
+  display: flex;
+  gap: 4px;
+}
+
+.navbar a {
+  padding: 6px 12px;
+  border-radius: 6px;
+  color: #5f6b7a;
+  text-decoration: none;
+}
+
+/* The link of the page you are on */
+.navbar a.active {
+  background: #eef2f7;
+  color: #1c2330;
+  font-weight: 600;
+}

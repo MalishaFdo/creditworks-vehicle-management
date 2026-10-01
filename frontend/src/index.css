@@ -1,0 +1,124 @@
+/* Styles shared by every page. Page-specific styles are in the styles/ folder. */
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: #1c2330;
+  background: #f5f6f8;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin: 0 0 16px;
+}
+
+/* Buttons (also used on links that look like buttons) */
+.button {
+  display: inline-block;
+  padding: 8px 16px;
+  border: 1px solid #cfd5dd;
+  border-radius: 6px;
+  background: white;
+  color: #1c2330;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button-primary {
+  background: #1f5fbf;
+  border-color: #1f5fbf;
+  color: white;
+}
+
+.button-danger {
+  color: #b42318;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Tables */
+.table-wrapper {
+  overflow-x: auto; /* scroll sideways on small screens */
+  background: white;
+  border: 1px solid #d8dde4;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid #e6e9ee;
+}
+
+th {
+  font-size: 0.85rem;
+  color: #5f6b7a;
+}
+
+/* Form inputs */
+input,
+select {
+  padding: 8px 10px;
+  border: 1px solid #cfd5dd;
+  border-radius: 6px;
+  font: inherit;
+  background: white;
+}
+
+/* Messages */
+.alert {
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 0 0 16px;
+}
+
+.alert ul {
+  margin: 4px 0 0;
+  padding-left: 20px;
+}
+
+.alert-error {
+  background: #fef3f2;
+  color: #b42318;
+  border: 1px solid #f5c2bd;
+}
+
+.alert-success {
+  background: #ecfdf3;
+  color: #067647;
+  border: 1px solid #a6e9c5;
+}
+
+/* Server error shown under a form field */
+.field-error {
+  color: #b42318;
+  font-size: 0.875rem;
+  font-weight: normal;
+}
+
+.form-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.category-icon {
+  color: #1f5fbf;
+}

@@ -1,0 +1,57 @@
+.category-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.row-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+/* The row being edited in the form below */
+.editing-row {
+  background: #eef4ff;
+}
+
+/* Add / edit form */
+.category-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 420px;
+  margin-top: 24px;
+  padding: 16px;
+  background: white;
+  border: 1px solid #d8dde4;
+  border-radius: 8px;
+}
+
+.category-form h2 {
+  font-size: 1.15rem;
+  margin: 0;
+}
+
+.category-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 600;
+}
+
+.category-form input,
+.category-form select {
+  font-weight: normal;
+}
+
+.icon-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon-picker select {
+  flex: 1;
+}
